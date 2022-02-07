@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * @file      startup_stm32g431xx.s
+  * @file      startup_stm32g491xx.s
   * @author    MCD Application Team
-  * @brief     STM32G431xx devices vector table GCC toolchain.
+  * @brief     STM32G491xx devices vector table GCC toolchain.
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
@@ -15,13 +15,12 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
-  * All rights reserved.</center></h2>
+  * Copyright (c) 2019 STMicroelectronics.
+  * All rights reserved.
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
   *
   ******************************************************************************
   */
@@ -165,7 +164,7 @@ g_pfnVectors:
 	.word	DMA1_Channel4_IRQHandler
 	.word	DMA1_Channel5_IRQHandler
 	.word	DMA1_Channel6_IRQHandler
-	.word	0
+	.word	DMA1_Channel7_IRQHandler
 	.word	ADC1_2_IRQHandler
 	.word	USB_HP_IRQHandler
 	.word	USB_LP_IRQHandler
@@ -195,13 +194,13 @@ g_pfnVectors:
 	.word	TIM8_UP_IRQHandler
 	.word	TIM8_TRG_COM_IRQHandler
 	.word	TIM8_CC_IRQHandler
-	.word	0
+	.word	ADC3_IRQHandler
 	.word	0
 	.word	LPTIM1_IRQHandler
 	.word	0
 	.word	SPI3_IRQHandler
 	.word	UART4_IRQHandler
-	.word	0
+	.word	UART5_IRQHandler
 	.word	TIM6_DAC_IRQHandler
 	.word	TIM7_IRQHandler
 	.word	DMA2_Channel1_IRQHandler
@@ -225,17 +224,17 @@ g_pfnVectors:
 	.word	0
 	.word	CRS_IRQHandler
 	.word	SAI1_IRQHandler
-	.word	0
-	.word	0
-	.word	0
-	.word	0
+	.word	TIM20_BRK_IRQHandler
+	.word	TIM20_UP_IRQHandler
+	.word	TIM20_TRG_COM_IRQHandler
+	.word	TIM20_CC_IRQHandler
 	.word	FPU_IRQHandler
 	.word	0
 	.word	0
 	.word	0
 	.word	0
-	.word	0
-	.word	0
+	.word	FDCAN2_IT0_IRQHandler
+	.word	FDCAN2_IT1_IRQHandler
 	.word	0
 	.word	0
 	.word	RNG_IRQHandler
@@ -243,11 +242,11 @@ g_pfnVectors:
 	.word	I2C3_EV_IRQHandler
 	.word	I2C3_ER_IRQHandler
 	.word	DMAMUX_OVR_IRQHandler
-	.word	0
-	.word	0
+	.word	QUADSPI_IRQHandler
+	.word	DMA1_Channel8_IRQHandler
 	.word	DMA2_Channel6_IRQHandler
-	.word	0
-	.word	0
+	.word	DMA2_Channel7_IRQHandler
+	.word	DMA2_Channel8_IRQHandler
 	.word	CORDIC_IRQHandler
 	.word	FMAC_IRQHandler
 
@@ -337,6 +336,9 @@ g_pfnVectors:
 	.weak	DMA1_Channel6_IRQHandler
 	.thumb_set DMA1_Channel6_IRQHandler,Default_Handler
 
+	.weak	DMA1_Channel7_IRQHandler
+	.thumb_set DMA1_Channel7_IRQHandler,Default_Handler
+
 	.weak	ADC1_2_IRQHandler
 	.thumb_set ADC1_2_IRQHandler,Default_Handler
 
@@ -424,6 +426,9 @@ g_pfnVectors:
 	.weak	TIM8_CC_IRQHandler
 	.thumb_set TIM8_CC_IRQHandler,Default_Handler
 
+	.weak	ADC3_IRQHandler
+	.thumb_set ADC3_IRQHandler,Default_Handler
+
 	.weak	LPTIM1_IRQHandler
 	.thumb_set LPTIM1_IRQHandler,Default_Handler
 
@@ -432,6 +437,9 @@ g_pfnVectors:
 
 	.weak	UART4_IRQHandler
 	.thumb_set UART4_IRQHandler,Default_Handler
+
+	.weak	UART5_IRQHandler
+	.thumb_set UART5_IRQHandler,Default_Handler
 
 	.weak	TIM6_DAC_IRQHandler
 	.thumb_set TIM6_DAC_IRQHandler,Default_Handler
@@ -469,8 +477,26 @@ g_pfnVectors:
 	.weak	SAI1_IRQHandler
 	.thumb_set SAI1_IRQHandler,Default_Handler
 
+	.weak	TIM20_BRK_IRQHandler
+	.thumb_set TIM20_BRK_IRQHandler,Default_Handler
+
+	.weak	TIM20_UP_IRQHandler
+	.thumb_set TIM20_UP_IRQHandler,Default_Handler
+
+	.weak	TIM20_TRG_COM_IRQHandler
+	.thumb_set TIM20_TRG_COM_IRQHandler,Default_Handler
+
+	.weak	TIM20_CC_IRQHandler
+	.thumb_set TIM20_CC_IRQHandler,Default_Handler
+
 	.weak	FPU_IRQHandler
 	.thumb_set FPU_IRQHandler,Default_Handler
+
+	.weak	FDCAN2_IT0_IRQHandler
+	.thumb_set FDCAN2_IT0_IRQHandler,Default_Handler
+
+	.weak	FDCAN2_IT1_IRQHandler
+	.thumb_set FDCAN2_IT1_IRQHandler,Default_Handler
 
 	.weak	RNG_IRQHandler
 	.thumb_set RNG_IRQHandler,Default_Handler
@@ -487,8 +513,20 @@ g_pfnVectors:
 	.weak	DMAMUX_OVR_IRQHandler
 	.thumb_set DMAMUX_OVR_IRQHandler,Default_Handler
 
+	.weak	QUADSPI_IRQHandler
+	.thumb_set QUADSPI_IRQHandler,Default_Handler
+
+	.weak	DMA1_Channel8_IRQHandler
+	.thumb_set DMA1_Channel8_IRQHandler,Default_Handler
+
 	.weak	DMA2_Channel6_IRQHandler
 	.thumb_set DMA2_Channel6_IRQHandler,Default_Handler
+
+	.weak	DMA2_Channel7_IRQHandler
+	.thumb_set DMA2_Channel7_IRQHandler,Default_Handler
+
+	.weak	DMA2_Channel8_IRQHandler
+	.thumb_set DMA2_Channel8_IRQHandler,Default_Handler
 
 	.weak	CORDIC_IRQHandler
 	.thumb_set CORDIC_IRQHandler,Default_Handler
@@ -496,4 +534,3 @@ g_pfnVectors:
 	.weak	FMAC_IRQHandler
 	.thumb_set FMAC_IRQHandler,Default_Handler
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
