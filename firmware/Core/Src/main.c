@@ -66,11 +66,11 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-UCAN_RxFrameDef can_rx_frame = { UCAN_FD_RX,	// frame_type
-		0, //frame_count
-		{}, //can_frame
-		//0, // packed_flags_and_error_counters
-		};
+UCAN_RxFrameDef can_rx_frame = {UCAN_FD_RX, // frame_type
+        0, //frame_count
+        {}, //can_frame
+        //0, // packed_flags_and_error_counters
+        };
 
 volatile static int counter = 1;
 void TurnOffBoot0();
@@ -83,8 +83,8 @@ void TurnOffBoot0();
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	TurnOffBoot0();
-	TurnOffBoot0();
+    TurnOffBoot0();
+    TurnOffBoot0();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -93,8 +93,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  DWT_Init();
-
+    DWT_Init();
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -109,126 +108,139 @@ int main(void)
   MX_USB_Device_Init();
   MX_FDCAN1_Init();
   /* USER CODE BEGIN 2 */
-	HAL_FDCAN_Start(&hfdcan1);
-
-	RING_init(&usb_rx);
-	RING_init(&usb_tx);
-
-	for (uint8_t i = 0; i < 10; i++) {
-		HAL_Delay(i * 10);
-		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-	}
-
+    HAL_FDCAN_Start(&hfdcan1);
+    
+    RING_init(&usb_rx);
+    RING_init(&usb_tx);
+    
+    for (uint8_t i = 0; i < 10; i++)
+    {
+        HAL_Delay(i * 10);
+        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+    }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-//	while (1){
-//
-//		static uint8_t TxData[8];
-//		static FDCAN_TxHeaderTypeDef TxHeader;
-//			  /* Prepare Tx Header */
-//			  TxHeader.Identifier = 0x321;
-//			  TxHeader.IdType = FDCAN_STANDARD_ID;
-//			  TxHeader.TxFrameType = FDCAN_DATA_FRAME;
-//			  TxHeader.DataLength = FDCAN_DLC_BYTES_8;
-//			  TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
-//			  TxHeader.BitRateSwitch = FDCAN_BRS_OFF;
-//			  TxHeader.FDFormat = FDCAN_CLASSIC_CAN;
-//			  TxHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
-//			  TxHeader.MessageMarker = 0;
-//
-//			  while(1) {
-//			  		HAL_Delay(1000);
-//			  		/* Set the data to be transmitted */
-//			  		TxData[0] = 1;
-//			  		TxData[1] = 0xAD;
-//			  		TxData[7] = 0x36;
-//			  		/* Start the Transmission process */
-//			  		if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxHeader, TxData) != HAL_OK)
-//			  		{
-//			  		  /* Transmission request Error */
-//			  		  Error_Handler();
-//			  		}
-//
-//					volatile uint32_t rx_fill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1,
-//					FDCAN_RX_FIFO0);
-//			  }
-//	}
-	while (1) {
-		volatile uint32_t rx_fill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1,
-		FDCAN_RX_FIFO0);
-		//volatile uint32_t tx_fill = HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
-		static Ring_item *data_ptr;
 
-		//HAL_WWDG_Refresh(&hwwdg);
-
-		data_ptr = RING_get(&usb_rx);
-		if (data_ptr->data != NULL) {
-			//FDCAN_InitTypeDef init_values;
-			if (UCAN_execute_USB_to_CAN_frame(data_ptr->data) == 0)
-				;
-		}
-
+//    while (1)
+//    {
+//
+//        static uint8_t TxData[8];
+//        static FDCAN_TxHeaderTypeDef TxHeader;
+//        // Prepare Tx Header
+//        TxHeader.Identifier = 0x321;
+//        TxHeader.IdType = FDCAN_STANDARD_ID;
+//        TxHeader.TxFrameType = FDCAN_DATA_FRAME;
+//        TxHeader.DataLength = FDCAN_DLC_BYTES_8;
+//        TxHeader.ErrorStateIndicator = FDCAN_ESI_ACTIVE;
+//        TxHeader.BitRateSwitch = FDCAN_BRS_OFF;
+//        TxHeader.FDFormat = FDCAN_CLASSIC_CAN;
+//        TxHeader.TxEventFifoControl = FDCAN_NO_TX_EVENTS;
+//        TxHeader.MessageMarker = 0;
+//
+//        while (1)
+//        {
+//            HAL_Delay(1000);
+//            // Set the data to be transmitted
+//            TxData[0] = 1;
+//            TxData[1] = 0xAD;
+//            TxData[7] = 0x36;
+//            // Start the Transmission process
+//            if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &TxHeader, TxData) != HAL_OK)
+//            {
+//                //Transmission request Error
+//                Error_Handler();
+//            }
+//
+//            //volatile uint32_t rx_fill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1, FDCAN_RX_FIFO0);
+//        }
+//    }
+    while (1)
+    {
+        volatile uint32_t rx_fill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1,
+        FDCAN_RX_FIFO0);
+        //volatile uint32_t tx_fill = HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
+        static Ring_item* data_ptr;
+        
+        //HAL_WWDG_Refresh(&hwwdg);
+        
+        data_ptr = RING_get(&usb_rx);
+        if (data_ptr->data != NULL)
+        {
+            //FDCAN_InitTypeDef init_values;
+            if (UCAN_execute_USB_to_CAN_frame(data_ptr->data) == 0)
+            {
+                
+            }
+        }
+        
 //		if (RING_is_empty(&usb_tx) == 0) {
-			//last delay
-			//volatile uint32_t systic = HAL_GetTick();
-//				DWT_Delay(300); /*300 us delay workaround for short frames  (@TODO fix this and test against 1 byte CAN data frame )*/
-
-//			if (DWT_us_Timer_Done() == 1) /*non blocking workaround*/
-				{
-					if (CDC_Is_Busy() != USBD_BUSY)
-					{
-						if (can_rx_frame.can_frame_count > 0)
-						{
-							data_ptr->data = (uint8_t*)&can_rx_frame;
-							data_ptr->len = sizeof(UCAN_RxFrameDef);
-						} else  /* handle rest of frames is no CAN transactions */
-						{
-							data_ptr = RING_get(&usb_tx);
-						}
-						if (data_ptr->len != 0) {
-							while (CDC_Transmit_FS(data_ptr->data, data_ptr->len) == USBD_BUSY);
-							if (data_ptr->len == sizeof(UCAN_RxFrameDef))
-								can_rx_frame.can_frame_count = 0;
-							status_sys_tick = HAL_GetTick();
-							if (gotoboot_flag == 1) {
-								for (uint8_t i = 0; i < 5; i++) {
-									HAL_Delay(i * 200);
-									HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-								}
-								RebootToBootloader();
-							}
-						}
-					}
-				}
+//        //last delay
+//        volatile uint32_t systic = HAL_GetTick();
+//        DWT_Delay(300); /*300 us delay workaround for short frames  (@TODO fix this and test against 1 byte CAN data frame )*/
+//
+//        if (DWT_us_Timer_Done() == 1) /*non blocking workaround*/
+        {
+            if (CDC_Is_Busy() != USBD_BUSY)
+            {
+                if (can_rx_frame.can_frame_count > 0)
+                {
+                    data_ptr->data = (uint8_t*)&can_rx_frame;
+                    data_ptr->len = sizeof(UCAN_RxFrameDef);
+                }
+                else // handle rest of frames is no CAN transactions
+                {
+                    data_ptr = RING_get(&usb_tx);
+                }
+                if (data_ptr->len != 0)
+                {
+                    while (CDC_Transmit_FS(data_ptr->data, data_ptr->len) == USBD_BUSY);
+                    if (data_ptr->len == sizeof(UCAN_RxFrameDef))
+                    {
+                        can_rx_frame.can_frame_count = 0;
+                    }
+                    status_sys_tick = HAL_GetTick();
+                    if (gotoboot_flag == 1)
+                    {
+                        for (uint8_t i = 0; i < 5; i++)
+                        {
+                            HAL_Delay(i * 200);
+                            HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+                        }
+                        RebootToBootloader();
+                    }
+                }
+            }
+        }
 //		}
-
-		/* reset device if no status frames */
-		if ((HAL_GetTick() - status_sys_tick) > 5000)
-			HAL_NVIC_SystemReset();
-
-		if (rx_fill >= 1) {
-			if (can_rx_frame.can_frame_count < UCAN_RX_FRAME_DEF_CAN_COUNT_MAX)
-			{
-
-				if (HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0,
-						&(can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_rx_header),
-						can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_data) == HAL_OK)
-				{
-						HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
-						i++;
-						can_rx_frame.can_frame_count ++;
-				}
-			}
-		}
-
-
-
+        
+        //reset device if no status frames
+        if ((HAL_GetTick() - status_sys_tick) > 5000)
+        {
+            HAL_NVIC_SystemReset();
+        }
+        
+        if (rx_fill >= 1)
+        {
+            if (can_rx_frame.can_frame_count < UCAN_RX_FRAME_DEF_CAN_COUNT_MAX)
+            {
+                
+                if (HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0,
+                                           &(can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_rx_header),
+                                           can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_data) == HAL_OK)
+                {
+                    HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+                    i++;
+                    can_rx_frame.can_frame_count++;
+                }
+            }
+        }
+    }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	}
+
   /* USER CODE END 3 */
 }
 
@@ -366,11 +378,11 @@ static void MX_GPIO_Init(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+/* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1)
+    {
+    }
   /* USER CODE END Error_Handler_Debug */
 }
 

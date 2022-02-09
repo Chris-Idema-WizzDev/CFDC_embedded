@@ -253,11 +253,11 @@ void HAL_PCD_SuspendCallback(PCD_HandleTypeDef *hpcd)
   USBD_LL_Suspend((USBD_HandleTypeDef*)hpcd->pData);
   /* Enter in STOP mode. */
   /* USER CODE BEGIN 2 */
-  if (hpcd->Init.low_power_enable)
-  {
-    /* Set SLEEPDEEP bit and SleepOnExit of Cortex System Control Register. */
-    SCB->SCR |= (uint32_t)((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
-  }
+    if (hpcd->Init.low_power_enable)
+    {
+/* Set SLEEPDEEP bit and SleepOnExit of Cortex System Control Register. */
+        SCB->SCR |= (uint32_t)((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+    }
   /* USER CODE END 2 */
   /* USER CODE BEGIN HAL_PCD_SuspendCallback_PostTreatment */
 
@@ -281,12 +281,12 @@ void HAL_PCD_ResumeCallback(PCD_HandleTypeDef *hpcd)
   /* USER CODE END HAL_PCD_ResumeCallback_PreTreatment */
 
   /* USER CODE BEGIN 3 */
-  if (hpcd->Init.low_power_enable)
-  {
-    /* Reset SLEEPDEEP bit of Cortex System Control Register. */
-    SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
-    SystemClockConfig_Resume();
-  }
+    if (hpcd->Init.low_power_enable)
+    {
+/* Reset SLEEPDEEP bit of Cortex System Control Register. */
+        SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+        SystemClockConfig_Resume();
+    }
   /* USER CODE END 3 */
 
   USBD_LL_Resume((USBD_HandleTypeDef*)hpcd->pData);
@@ -439,13 +439,13 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
   /* USER CODE END RegisterCallBackSecondPart */
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
   /* USER CODE BEGIN EndPoint_Configuration */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x00 , PCD_SNG_BUF, 0x18);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x80 , PCD_SNG_BUF, 0x58);
+    HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x00, PCD_SNG_BUF, 0x18);
+    HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x80, PCD_SNG_BUF, 0x58);
   /* USER CODE END EndPoint_Configuration */
   /* USER CODE BEGIN EndPoint_Configuration_CDC */
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x81 , PCD_SNG_BUF, 0xC0);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x01 , PCD_SNG_BUF, 0x110);
-  HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData , 0x82 , PCD_SNG_BUF, 0x100);
+    HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x81, PCD_SNG_BUF, 0xC0);
+    HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x01, PCD_SNG_BUF, 0x110);
+    HAL_PCDEx_PMAConfig((PCD_HandleTypeDef*)pdev->pData, 0x82, PCD_SNG_BUF, 0x100);
   /* USER CODE END EndPoint_Configuration_CDC */
   return USBD_OK;
 }
@@ -695,30 +695,30 @@ void HAL_PCDEx_LPM_Callback(PCD_HandleTypeDef *hpcd, PCD_LPM_MsgTypeDef msg)
 #endif /* USE_HAL_PCD_REGISTER_CALLBACKS */
 {
   /* USER CODE BEGIN LPM_Callback */
-  switch (msg)
-  {
-  case PCD_LPM_L0_ACTIVE:
-    if (hpcd->Init.low_power_enable)
+    switch (msg)
     {
-      SystemClockConfig_Resume();
-
-      /* Reset SLEEPDEEP bit of Cortex System Control Register. */
-      SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+        case PCD_LPM_L0_ACTIVE:
+            if (hpcd->Init.low_power_enable)
+            {
+                SystemClockConfig_Resume();
+                
+/* Reset SLEEPDEEP bit of Cortex System Control Register. */
+                SCB->SCR &= (uint32_t)~((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+            }
+            USBD_LL_Resume(hpcd->pData);
+            break;
+            
+        case PCD_LPM_L1_ACTIVE:
+            USBD_LL_Suspend(hpcd->pData);
+            
+/* Enter in STOP mode. */
+            if (hpcd->Init.low_power_enable)
+            {
+/* Set SLEEPDEEP bit and SleepOnExit of Cortex System Control Register. */
+                SCB->SCR |= (uint32_t)((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
+            }
+            break;
     }
-    USBD_LL_Resume(hpcd->pData);
-    break;
-
-  case PCD_LPM_L1_ACTIVE:
-    USBD_LL_Suspend(hpcd->pData);
-
-    /* Enter in STOP mode. */
-    if (hpcd->Init.low_power_enable)
-    {
-      /* Set SLEEPDEEP bit and SleepOnExit of Cortex System Control Register. */
-      SCB->SCR |= (uint32_t)((uint32_t)(SCB_SCR_SLEEPDEEP_Msk | SCB_SCR_SLEEPONEXIT_Msk));
-    }
-    break;
-  }
   /* USER CODE END LPM_Callback */
 }
 
@@ -761,7 +761,7 @@ void USBD_static_free(void *p)
   */
 static void SystemClockConfig_Resume(void)
 {
-  SystemClock_Config();
+    SystemClock_Config();
 }
 /* USER CODE END 5 */
 
