@@ -10,6 +10,7 @@
 #include "jump_to_boot.h"
 #include "RING.h"
 #include "dwt_delay.h"
+#include <stdbool.h>
 
 
 static FDCAN_InitTypeDef init_values;
@@ -55,7 +56,10 @@ static void update_ACK(void) {
 uint8_t UCAN_execute_USB_to_CAN_frame(uint8_t *data) {
 	UCAN_TxFrameDef *txf = data;
 	UCAN_InitFrameDef *intframe = data;
+	bool extended = false;
+
 	extern FDCAN_HandleTypeDef hfdcan1;
+
 	if (data == NULL)
 		return 1;
 
@@ -76,6 +80,12 @@ uint8_t UCAN_execute_USB_to_CAN_frame(uint8_t *data) {
 		//add ACK to fifo
 		break;
 	case UCAN_FD_TX:
+
+
+	    extended = ((txf->can_tx_header.Identifier & CAN_EFF_MASK) > CAN_SFF_MASK) || ((txf->can_tx_header.Identifier & CAN_EFF_FLAG) != 0);
+        txf->can_tx_header.Identifier = txf->can_tx_header.Identifier & CAN_EFF_MASK;
+	    txf->can_tx_header.IdType = extended ? FDCAN_EXTENDED_ID : FDCAN_STANDARD_ID;
+
 		if (HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1, &(txf->can_tx_header),
 				txf->can_data) == HAL_OK) {
 			update_ACK();

@@ -19,6 +19,11 @@
 #define UCAN_FRAME_RX_FIFO_SIZE (16u)
 #define UCAN_FRAME_TX_FIFO_SIZE UCAN_FRAME_RX_FIFO_SIZE
 
+#define CAN_EFF_FLAG 0x80000000U /* EFF/SFF is set in the MSB */
+#define CAN_RTR_FLAG 0x40000000U /* remote transmission request */
+#define CAN_ERR_FLAG 0x20000000U /* error message frame */
+#define CAN_SFF_MASK 0x000007FFU /* standard frame format (SFF) */
+#define CAN_EFF_MASK 0x1FFFFFFFU /* extended frame format (EFF) */
 
 /**
   * @brief List all Frames on CAN <-> USB protocol
