@@ -49,7 +49,9 @@ extern USBD_DescriptorsTypeDef CDC_Desc;
  * -- Insert your variables declaration here --
  */
 /* USER CODE BEGIN 0 */
-
+extern uint8_t USBD_CDC_DeviceDesc[USB_LEN_DEV_DESC];
+#define DEVICE_CLASS_INDEX 4
+#define DEVICE_SUBCLASS_INDEX 5
 /* USER CODE END 0 */
 
 /*
@@ -66,7 +68,9 @@ extern USBD_DescriptorsTypeDef CDC_Desc;
 void MX_USB_Device_Init(void)
 {
   /* USER CODE BEGIN USB_Device_Init_PreTreatment */
-
+  // set bDeviceClass and bDeviceSubClass to 0 here, cannot be done in STM32CubeMX
+  USBD_CDC_DeviceDesc[DEVICE_CLASS_INDEX] = 0x00;
+  USBD_CDC_DeviceDesc[DEVICE_SUBCLASS_INDEX] = 0x00;
   /* USER CODE END USB_Device_Init_PreTreatment */
 
   /* Init Device Library, add supported class and start the library. */
