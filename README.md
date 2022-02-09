@@ -71,3 +71,9 @@ cansend vcan0 18FEEEFE#112233
 - test CAN-FD frames, right now only classic CAN is tested
 - implement bootloader
 
+# Misc
+
+- forked from: https://github.com/ucandevices/CFDC_embedded
+- original project this is based on: https://ucandevices.github.io/cfuc.html
+- ucan_itils: https://github.com/ucandevices/ucan_utils
+- can-utils: https://github.com/linux-can/can-utils
