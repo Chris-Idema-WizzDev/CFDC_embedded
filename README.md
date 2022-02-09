@@ -66,9 +66,43 @@ Extended:
 cansend vcan0 18FEEEFE#112233
 ```
 
+# Python with python-can
+
+open:
+```
+import can
+with can.interface.Bus(interface="socketcan", channel="vcan0", fd=True) as bus:
+```
+Send:
+```
+msg = can.Message(
+    arbitration_id=0x123, 
+    data=[0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88], 
+    is_extended_id=True
+)
+
+bus.send(msg)
+```
+
+Read:
+```
+msg = bus.recv(1)
+if msg is not None:
+    print(msg)
+```
+
+# C
+
+Plenty of examples of socketcan exist such as can-utils. Make sure to activate CAN-FD or you won't be able to receive data.
+Activate CAN-FD
+```
+static const int canfd_on = 1;
+setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
+```
+
 # Todo
 
-- test CAN-FD frames, right now only classic CAN is tested
+- test CAN-FD frameslonger than 8 bytes, right now only classic CAN is tested
 - implement bootloader
 
 # Misc
@@ -77,3 +111,4 @@ cansend vcan0 18FEEEFE#112233
 - original project this is based on: https://ucandevices.github.io/cfuc.html
 - ucan_itils: https://github.com/ucandevices/ucan_utils
 - can-utils: https://github.com/linux-can/can-utils
+- python-can: https://github.com/hardbyte/python-can
