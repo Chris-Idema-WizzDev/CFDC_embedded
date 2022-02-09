@@ -66,11 +66,7 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-UCAN_RxFrameDef can_rx_frame = {UCAN_FD_RX, // frame_type
-        0, //frame_count
-        {}, //can_frame
-        //0, // packed_flags_and_error_counters
-        };
+UCAN_RxFrameDef can_rx_frames = {UCAN_FD_RX, 0, {} };
 
 volatile static int counter = 1;
 void TurnOffBoot0();
@@ -184,9 +180,9 @@ int main(void)
         {
             if (CDC_Is_Busy() != USBD_BUSY)
             {
-                if (can_rx_frame.can_frame_count > 0)
+                if (can_rx_frames.can_frame_count > 0)
                 {
-                    data_ptr->data = (uint8_t*)&can_rx_frame;
+                    data_ptr->data = (uint8_t*)&can_rx_frames;
                     data_ptr->len = sizeof(UCAN_RxFrameDef);
                 }
                 else // handle rest of frames is no CAN transactions
@@ -198,7 +194,7 @@ int main(void)
                     while (CDC_Transmit_FS(data_ptr->data, data_ptr->len) == USBD_BUSY);
                     if (data_ptr->len == sizeof(UCAN_RxFrameDef))
                     {
-                        can_rx_frame.can_frame_count = 0;
+                        can_rx_frames.can_frame_count = 0;
                     }
                     status_sys_tick = HAL_GetTick();
                     if (gotoboot_flag == 1)
@@ -223,16 +219,25 @@ int main(void)
         
         if (rx_fill >= 1)
         {
-            if (can_rx_frame.can_frame_count < UCAN_RX_FRAME_DEF_CAN_COUNT_MAX)
+            if (can_rx_frames.can_frame_count < UCAN_RX_FRAME_DEF_CAN_COUNT_MAX)
             {
                 
                 if (HAL_FDCAN_GetRxMessage(&hfdcan1, FDCAN_RX_FIFO0,
-                                           &(can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_rx_header),
-                                           can_rx_frame.can_frame[can_rx_frame.can_frame_count].can_data) == HAL_OK)
+                                           &(can_rx_frames.can_frame[can_rx_frames.can_frame_count].can_rx_header),
+                                           can_rx_frames.can_frame[can_rx_frames.can_frame_count].can_data) == HAL_OK)
                 {
+                    // add EFF flag to ID if frame is extended:
+                    if (can_rx_frames.can_frame[can_rx_frames.can_frame_count].can_rx_header.IdType == FDCAN_EXTENDED_ID)
+                    {
+                        can_rx_frames.can_frame[can_rx_frames.can_frame_count].can_rx_header.Identifier |= CAN_EFF_FLAG;
+                    }
+
+                    // clear packed_flags_and_error_counters
+                    can_rx_frames.can_frame[can_rx_frames.can_frame_count].packed_flags_and_error_counters = 0;
+
                     HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
                     i++;
-                    can_rx_frame.can_frame_count++;
+                    can_rx_frames.can_frame_count++;
                 }
             }
         }
