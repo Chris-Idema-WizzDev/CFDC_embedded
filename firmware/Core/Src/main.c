@@ -93,7 +93,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-	DWT_Init();
+  DWT_Init();
 
   /* USER CODE END Init */
 
@@ -158,21 +158,21 @@ int main(void)
 	while (1) {
 		volatile uint32_t rx_fill = HAL_FDCAN_GetRxFifoFillLevel(&hfdcan1,
 		FDCAN_RX_FIFO0);
-		volatile uint32_t tx_fill = HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
+		//volatile uint32_t tx_fill = HAL_FDCAN_GetTxFifoFreeLevel(&hfdcan1);
 		static Ring_item *data_ptr;
 
 		//HAL_WWDG_Refresh(&hwwdg);
 
 		data_ptr = RING_get(&usb_rx);
 		if (data_ptr->data != NULL) {
-			FDCAN_InitTypeDef init_values;
+			//FDCAN_InitTypeDef init_values;
 			if (UCAN_execute_USB_to_CAN_frame(data_ptr->data) == 0)
 				;
 		}
 
 //		if (RING_is_empty(&usb_tx) == 0) {
 			//last delay
-			volatile uint32_t systic = HAL_GetTick();
+			//volatile uint32_t systic = HAL_GetTick();
 //				DWT_Delay(300); /*300 us delay workaround for short frames  (@TODO fix this and test against 1 byte CAN data frame )*/
 
 //			if (DWT_us_Timer_Done() == 1) /*non blocking workaround*/

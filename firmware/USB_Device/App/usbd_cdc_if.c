@@ -272,7 +272,7 @@ static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 	UCAN_InitFrameDef *dummy_frame = (UCAN_InitFrameDef*)UserRxBufferFS;
 	static uint32_t buff_offset = 0;
 	static uint8_t* buff_start = NULL;
-	volatile static uint8_t* buff_dbg = 0;
+	//volatile static uint8_t* buff_dbg = 0;
 
 //	buff_dbg = Buf;
 	usb_packet_len = *Len;

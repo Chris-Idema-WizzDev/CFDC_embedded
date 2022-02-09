@@ -10,10 +10,12 @@
 #include "jump_to_boot.h"
 #include "RING.h"
 #include "dwt_delay.h"
+
 #include <stdbool.h>
+#include <string.h> // for memcpy
 
 
-static FDCAN_InitTypeDef init_values;
+//static FDCAN_InitTypeDef init_values;
 extern FDCAN_HandleTypeDef hfdcan1;
 extern Ring_type usb_rx;
 extern Ring_type usb_tx;
@@ -54,8 +56,8 @@ static void update_ACK(void) {
 }
 
 uint8_t UCAN_execute_USB_to_CAN_frame(uint8_t *data) {
-	UCAN_TxFrameDef *txf = data;
-	UCAN_InitFrameDef *intframe = data;
+	UCAN_TxFrameDef *txf = (UCAN_TxFrameDef*)data;
+	UCAN_InitFrameDef *intframe = (UCAN_InitFrameDef*)data;
 	bool extended = false;
 
 	extern FDCAN_HandleTypeDef hfdcan1;

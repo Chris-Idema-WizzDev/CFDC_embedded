@@ -5,6 +5,7 @@
  *      Author: Admin
  */
 #include "RING.h"
+#include <string.h> // for memcpy, memset
 
 void RING_init(Ring_type *ring) {
     ring->tail = ring->head = 0;
@@ -32,7 +33,7 @@ uint8_t RING_fill(Ring_type *ring)
 
 }
 
-void RING_put(Ring_type *ring, uint8_t *data, uint32_t len) {
+void RING_put(Ring_type *ring, void* data, uint32_t len) {
     if(RING_is_full(ring))
     	return;
 
