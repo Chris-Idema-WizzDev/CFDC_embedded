@@ -102,7 +102,8 @@ setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &canfd_on, sizeof(canfd_on));
 
 # Todo
 
-- test CAN-FD frameslonger than 8 bytes, right now only classic CAN is tested
+- disabled CAN before it is initialized by USB
+- test CAN-FD frames longer than 8 bytes, right now only classic CAN is tested
 - implement bootloader
 
 # Misc
